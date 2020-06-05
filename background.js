@@ -1,28 +1,25 @@
 chrome.runtime.onInstalled.addListener(function () {
   console.log("hello");
+
   chrome.commands.onCommand.addListener(function (command) {
     console.log("Command:", command);
+    chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
+      const firstMeetTab = tabs[0];
+      console.log(firstMeetTab);
+      chrome.tabs.sendMessage(firstMeetTab.id, { toggleMic: true });
+    });
+  });
 
-    chrome.tabs.query(
-      {
-        url: "https://meet.google.com/*",
-      },
-      (tabs) => {
-        console.log(tabs);
-        const firstMeetTab = tabs[0];
-        chrome.tabs.executeScript(firstMeetTab.id, {
-          file: "togglemic.js",
-        }),
-          (result) => {
-            console.log("result");
-          };
-        chrome.notifications.create({
-          title: "qweqe",
-          type: "basic",
-          iconUrl: "mute-icon.png",
-          message: "qwqwe12354",
-        });
-      }
-    );
+  chrome.runtime.onMessage.addListener(function (request, sender) {
+    console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
+    console.log(request);
+    if (request.micMuted) {
+      chrome.notifications.create({
+        title: "Google Meet PTT",
+        type: "basic",
+        iconUrl: "mute-icon.png",
+        message: `Mic is ${request.micMuted}`,
+      });
+    }
   });
 });

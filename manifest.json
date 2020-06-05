@@ -8,6 +8,12 @@
     "persistent": false
   },
   "permissions": ["tabs", "https://meet.google.com/*", "notifications"],
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["togglemic.js"]
+    }
+  ],
   "commands": {
     "toggle-feature-foo": {
       "suggested_key": {
