@@ -25,7 +25,8 @@ chrome.commands.onCommand.addListener(function (command) {
 // Using that as a trigger send a message to content script, to start listening for click events
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   console.log('Tab updated', tabId, changeInfo, tab);
-  if(changeInfo.audible === false){
+  if((changeInfo.status === "complete" && tab.url !== "https://meet.google.com/") || 
+    (changeInfo.audible === false)){
     chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     if (tabs && tabs.length > 0) {
       const firstMeetTab = tabs[0];
