@@ -17,7 +17,7 @@
   "commands": {
     "toggle-mic": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Q"
+        "default": "Ctrl+Shift+5"
       },
       "description": "Toggle Microphone",
       "global": true

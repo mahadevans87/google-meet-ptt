@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     chrome.notifications.create({
       title: "Google Meet PTT",
       type: "basic",
-      iconUrl: "mute-icon.png",
+      iconUrl: `mic-${request.micMuted}.png`,
       message: `Mic is ${request.micMuted}`,
     });
   }
