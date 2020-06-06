@@ -30,7 +30,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (tabs && tabs.length > 0) {
       const firstMeetTab = tabs[0];
       console.log(firstMeetTab);
-      chrome.tabs.sendMessage(firstMeetTab.id, { listenToMicClick: true });
+      chrome.tabs.sendMessage(firstMeetTab.id, { listenToMicClick: true }, (response) => {
+        if(response && response.currentMicStatus){
+          chrome.browserAction.setIcon({path: `/mic-${response.currentMicStatus}-38x38.png`})
+        }
+      });
     }
   });
   }
@@ -54,7 +58,7 @@ chrome.browserAction.onClicked.addListener(function callback() {
   toggleMicrophone();
 });
 
-chrome.tabs.onRemoved.addListener(function callback() {
+chrome.tabs.onRemoved.addListener(function callback(tabId, removeInfo) {
   chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     if (!tabs || tabs.length == 0) {
       chrome.browserAction.setIcon({ path: `/mic-default-38x38.png` });
