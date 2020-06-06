@@ -15,11 +15,11 @@
     }
   ],
   "commands": {
-    "toggle-feature-foo": {
+    "toggle-mic": {
       "suggested_key": {
-        "default": "Ctrl+Shift+5"
+        "default": "Ctrl+Shift+Q"
       },
-      "description": "Toggle PTT",
+      "description": "Toggle Microphone",
       "global": true
     }
   }
