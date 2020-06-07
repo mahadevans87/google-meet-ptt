@@ -1,7 +1,7 @@
 let micButton;
 
 function handleMicClick(event) {
-  setTimeout(function(){
+  setTimeout(function () {
     micMuted = micButton.getAttribute("data-is-muted");
     console.log("Mic-muted: ", micMuted);
     chrome.runtime.sendMessage({ micMuted: micMuted === "true" ? "OFF" : "ON" });
@@ -11,24 +11,24 @@ function handleMicClick(event) {
 window.addEventListener(
   "load",
   function () {
-    console.log('window load called');
+    console.log("window load called");
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       console.log("Message", sender.tab ? "from a content script:" + sender.tab.url : "from the extension", request);
       if (request.toggleMic) {
         micButton = document.querySelector(".sUZ4id").children[0];
         micButton.click();
-        sendResponse(true);
-      } else if (request.listenToMicClick){
+        return true;
+      } else if (request.listenToMicClick) {
         // if(micButton != null){
         //   micButton.removeEventListener('click',handleMicClick);
         // }
         micButton = document.querySelector(".sUZ4id").children[0];
         let micMuted = micButton.getAttribute("data-is-muted");
         micButton.addEventListener("click", handleMicClick);
-        // Send response back to the extension so that 
+        // Send response back to the extension so that
         // the extension can update the icon in chrome toolbar
         sendResponse({
-          currentMicStatus: (micMuted === "true") ? "OFF" : "ON" 
+          currentMicStatus: micMuted === "true" ? "OFF" : "ON",
         });
       }
       return true;
