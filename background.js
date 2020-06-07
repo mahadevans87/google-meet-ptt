@@ -9,7 +9,7 @@ const toggleMicrophone = function () {
       console.log(firstMeetTab);
       chrome.tabs.sendMessage(firstMeetTab.id, { toggleMic: true });
     } else {
-      chrome.browserAction.setIcon({ path: `/mic-default-38x38.png` });
+      chrome.browserAction.setIcon({ path: `/icons/meet_assist_default.png` });
     }
   });
 };
@@ -33,7 +33,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       console.log(firstMeetTab);
       chrome.tabs.sendMessage(firstMeetTab.id, { listenToMicClick: true }, (response) => {
         if(response && response.currentMicStatus){
-          chrome.browserAction.setIcon({path: `/mic-${response.currentMicStatus}-38x38.png`})
+          chrome.browserAction.setIcon({path: `/icons/meet_assist_mic_${response.currentMicStatus}.png`})
         }
       });
     }
@@ -47,11 +47,11 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     chrome.notifications.create({
       title: "Google Meet PTT",
       type: "basic",
-      iconUrl: `mic-${request.micMuted}.svg`,
+      iconUrl: `icons/mic-${request.micMuted}.svg`,
       message: `Mic is ${request.micMuted}`,
     });
     //update extension icon
-    chrome.browserAction.setIcon({ path: `/mic-${request.micMuted}-38x38.png` });
+    chrome.browserAction.setIcon({ path: `/icons/meet_assist_mic_${request.micMuted}.png` });
   }
 });
 
@@ -62,7 +62,7 @@ chrome.browserAction.onClicked.addListener(function callback() {
 chrome.tabs.onRemoved.addListener(function callback(tabId, removeInfo) {
   chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     if (!tabs || tabs.length == 0) {
-      chrome.browserAction.setIcon({ path: `/mic-default-38x38.png` });
+      chrome.browserAction.setIcon({ path: `/icons/meet_assist_default.png` });
     }
   });
 });

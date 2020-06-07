@@ -25,7 +25,12 @@
   },
   "browser_action": {
     "default_icon": {
-      "32": "mic-default-38x38.png"
+      "32": "icons/meet_assist_default.png"
     }
+  },
+  "icons": {
+    "16": "icons/meet_assist_16.png",
+    "48": "icons/meet_assist_48.png",
+    "128": "icons/meet_assist_128.png"
   }
 }
