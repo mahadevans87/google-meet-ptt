@@ -1,14 +1,14 @@
 let previousMicState = "ON";
 
 chrome.runtime.onInstalled.addListener(function () {
-  console.log("Google Meet PTT Installed");
+  // console.log("Google Meet PTT Installed");
 });
 
 const toggleMicrophone = function () {
   chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     if (tabs && tabs.length > 0) {
       const firstMeetTab = tabs[0];
-      console.log(firstMeetTab);
+      // console.log(firstMeetTab);
       tabs.forEach((tab) => {
         chrome.tabs.sendMessage(tab.id, { toggleMic: true });
       });
@@ -19,7 +19,7 @@ const toggleMicrophone = function () {
 };
 
 chrome.commands.onCommand.addListener(function (command) {
-  console.log("Command:", command);
+  // console.log("Command:", command);
   toggleMicrophone();
 });
 
@@ -33,13 +33,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
       if (tabs && tabs.length > 0) {
         const firstMeetTab = tabs[0];
-        console.log(firstMeetTab);
+        // console.log(firstMeetTab);
         tabs.forEach((tab) => {
           chrome.tabs.sendMessage(tab.id, { listenToMicClick: true }, (response) => {
             if (response && response.currentMicStatus) {
               chrome.browserAction.setIcon({ path: `/icons/mic-${response.currentMicStatus}.png` });
             } else if (!response) {
-              console.log("No response - onUpdated", chrome.runtime.lastError);
+              // console.log("No response - onUpdated", chrome.runtime.lastError);
             }
           });
         });
@@ -49,11 +49,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
-  console.log("Request", sender.tab ? "from a content script:" + sender.tab.url : "from the extension", request);
+  // console.log("Request", sender.tab ? "from a content script:" + sender.tab.url : "from the extension", request);
   if (request.micMuted && request.micMuted !== previousMicState) {
-    console.log("Creating notification");
+    // console.log("Creating notification");
     chrome.notifications.create({
-      title: "Google Meet PTT",
+      title: "Mute for Google Meet™",
       type: "basic",
       iconUrl: `icons/mic-${request.micMuted}.svg`,
       message: `Mic is ${request.micMuted}`,
@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     //update extension icon
     chrome.browserAction.setIcon({ path: `/icons/mic-${request.micMuted}.png` });
   } else {
-    console.log("No need of creating notification");
+    // console.log("No need of creating notification");
   }
   previousMicState = request.micMuted;
 });

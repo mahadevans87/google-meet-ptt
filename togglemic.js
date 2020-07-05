@@ -3,7 +3,7 @@ let micButton;
 function handleMicClick(event) {
   setTimeout(function () {
     micMuted = micButton.getAttribute("data-is-muted");
-    console.log("Mic-muted: ", micMuted);
+    // console.log("Mic-muted: ", micMuted);
     chrome.runtime.sendMessage({ micMuted: micMuted === "true" ? "OFF" : "ON" });
   }, 0);
 }
@@ -11,9 +11,9 @@ function handleMicClick(event) {
 window.addEventListener(
   "load",
   function () {
-    console.log("window load called");
+    // console.log("window load called");
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-      console.log("Message", sender.tab ? "from a content script:" + sender.tab.url : "from the extension", request);
+      // console.log("Message", sender.tab ? "from a content script:" + sender.tab.url : "from the extension", request);
       if (request.toggleMic) {
         micButton = document.querySelector(".sUZ4id").children[0];
         micButton.click();
