@@ -18,10 +18,30 @@ const toggleMicrophone = function () {
   });
 };
 
+const redirectToMeetHome = () => {
+  chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
+    if (tabs && tabs.length > 0) {
+      tabs.forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, { returnHome: true });
+      });
+    }
+  });
+}
+
 chrome.commands.onCommand.addListener(function (command) {
-  // console.log("Command:", command);
-  toggleMicrophone();
+  // console.log('Command', command);
+  switch (command) {
+    case 'toggle-mic':  
+      toggleMicrophone();
+      break;
+    case 'return-home':
+      redirectToMeetHome();
+      break;
+    default:
+      break;
+  }
 });
+
 
 // chrome.tabs.onUpdated is called when a tab is updated in chrome
 // For meet, when the user joins a call, chrome.tabs.onUpdated is called with the changeInfo as
