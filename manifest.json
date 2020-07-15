@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://meet.google.com/*"],
-      "js": ["togglemic.js"]
+      "js": ["togglemic.js", "returnToMeetHome.js"]
     }
   ],
   "commands": {
@@ -21,6 +21,13 @@
       },
       "description": "Toggle Microphone",
       "global": true
+    }, 
+    "return-home": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1"
+      },
+      "description": "Return to Meet Home",
+      "global": false
     }
   },
   "browser_action": {
