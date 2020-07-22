@@ -56,6 +56,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
       type: "basic",
       iconUrl: `icons/mic-${request.micMuted}.svg`,
       message: `Mic is ${request.micMuted}`,
+      silent: true,
     });
     //update extension icon
     chrome.browserAction.setIcon({ path: `/icons/meet_assist_mic_${request.micMuted}.png` });
