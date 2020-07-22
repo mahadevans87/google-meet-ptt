@@ -1,7 +1,7 @@
 {
-  "name": "Google Meet Push To Talk",
-  "version": "1.0",
-  "description": "Push to Talk for Google Meet",
+  "name": "Mute for Google Meet™",
+  "version": "1.0.0",
+  "description": "Universal mute toggle for Google Meet",
   "manifest_version": 2,
   "background": {
     "scripts": ["background.js"],
@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://meet.google.com/*"],
-      "js": ["togglemic.js"]
+      "js": ["togglemic.js", "returnToMeetHome.js"]
     }
   ],
   "commands": {
@@ -21,6 +21,13 @@
       },
       "description": "Toggle Microphone",
       "global": true
+    }, 
+    "return-home": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1"
+      },
+      "description": "Return to Meet Home",
+      "global": false
     }
   },
   "browser_action": {
