@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://meet.google.com/*"],
-      "js": ["togglemic.js", "returnToMeetHome.js"]
+      "js": ["togglemic.js", "returnToMeetHome.js", "switchToActiveTab.js"]
     }
   ],
   "commands": {
@@ -28,6 +28,13 @@
       },
       "description": "Return to Meet Home",
       "global": false
+    }, 
+    "switch-to-active-tab": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+2"
+      },
+      "description": "Switch to active Meet tab",
+      "global": true
     }
   },
   "browser_action": {
