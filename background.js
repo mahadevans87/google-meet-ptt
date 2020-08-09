@@ -34,6 +34,9 @@ const switchToActiveTab = () => {
       chrome.tabs.sendMessage(tab.id, { checkActiveMeetCall: true }, (response) => {
         if(response.shouldSwitchToThisTab){
           chrome.tabs.update(tab.id, {selected: true});
+          chrome.windows.update(tab.windowId,{
+            drawAttention: true
+          });
         }
       });
     });
