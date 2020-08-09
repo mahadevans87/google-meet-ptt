@@ -35,7 +35,7 @@ const switchToActiveTab = () => {
         if(response.shouldSwitchToThisTab){
           chrome.tabs.update(tab.id, {selected: true});
           chrome.windows.update(tab.windowId,{
-            drawAttention: true
+            focused: true
           });
         }
       });
