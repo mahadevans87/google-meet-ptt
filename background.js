@@ -4,12 +4,22 @@ chrome.runtime.onInstalled.addListener(function () {
   // console.log("Google Meet PTT Installed");
 });
 
+const bringChromeTabToForeground = (tab) => {
+  chrome.tabs.sendMessage(tab.id, { checkActiveMeetCall: true }, (response) => {
+    if(response.shouldSwitchToThisTab){
+      chrome.tabs.update(tab.id, {selected: true});
+      chrome.windows.update(tab.windowId,{
+        focused: true
+      });
+    }
+  });
+};
+
 const toggleMicrophone = function () {
   chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     if (tabs && tabs.length > 0) {
-      const firstMeetTab = tabs[0];
-      // console.log(firstMeetTab);
       tabs.forEach((tab) => {
+        bringChromeTabToForeground(tab);
         chrome.tabs.sendMessage(tab.id, { toggleMic: true });
       });
     } else {
@@ -31,11 +41,7 @@ const redirectToMeetHome = () => {
 const switchToActiveTab = () => {
   chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     tabs.forEach((tab) => {
-      chrome.tabs.sendMessage(tab.id, { checkActiveMeetCall: true }, (response) => {
-        if(response.shouldSwitchToThisTab){
-          chrome.tabs.update(tab.id, {selected: true});
-        }
-      });
+      bringChromeTabToForeground(tab);
     });
   });
 }
