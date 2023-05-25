@@ -1,7 +1,18 @@
-let previousMicState = "ON";
-
-chrome.runtime.onInstalled.addListener(function () {
-  // console.log("Google Meet PTT Installed");
+chrome.runtime.onInstalled.addListener(function (details) {
+  console.log("Google Meet PTT Installed");
+  switch (details.reason) {
+    case 'install':
+      let previousMicState = "ON";
+      let notifications = true;
+      chrome.storage.local.set({previousMicState});
+      chrome.storage.local.set({notifications});
+       break;
+    // case 'update':
+    // case 'chrome_update':
+    // case 'shared_module_update':
+    default:
+       break;
+  }
 });
 
 const bringChromeTabToForeground = (tab) => {
@@ -23,7 +34,7 @@ const toggleMicrophone = function () {
         chrome.tabs.sendMessage(tab.id, { toggleMic: true });
       });
     } else {
-      chrome.browserAction.setIcon({ path: `/icons/mic-default.png` });
+      chrome.action.setIcon({ path: `/icons/mic-default.png` });
     }
   });
 };
@@ -46,8 +57,25 @@ const switchToActiveTab = () => {
   });
 }
 
+const toogleNotifications = () => {
+  chrome.storage.local.get('notifications', function (notifications) {
+    let notificationText = notifications === true ? "Enabled" : "Disabled";
+    chrome.notifications.create('notify1', opt, function() { console.log('created!'); });
+    chrome.notifications.create({
+      title: "Mute for Google Meet™",
+      type: "basic",
+      // iconUrl: `icons/meet_assist_default.png`,
+      message: `${notificationText} mic notifications`,
+      silent: true,
+    });
+    notifications = notifications === true ? false : true ;
+    chrome.storage.local.set({notifications});
+  });
+}
+
 chrome.commands.onCommand.addListener(function (command) {
   // console.log('Command', command);
+  let notifications;
   switch (command) {
     case 'toggle-mic':  
       toggleMicrophone();
@@ -57,6 +85,9 @@ chrome.commands.onCommand.addListener(function (command) {
       break;
     case 'switch-to-active-tab':
       switchToActiveTab();
+      break;
+    case 'toogle-notifications':
+      toogleNotifications();
       break;
     default:
       break;
@@ -78,7 +109,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         tabs.forEach((tab) => {
           chrome.tabs.sendMessage(tab.id, { listenToMicClick: true }, (response) => {
             if (response && response.currentMicStatus) {
-              chrome.browserAction.setIcon({ path: `/icons/mic-${response.currentMicStatus}.png` });
+              chrome.action.setIcon({ path: `/icons/mic-${response.currentMicStatus}.png` });
             } else if (!response) {
               // console.log("No response - onUpdated", chrome.runtime.lastError);
             }
@@ -91,31 +122,37 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
   // console.log("Request", sender.tab ? "from a content script:" + sender.tab.url : "from the extension", request);
-  if (request.micMuted && request.micMuted !== previousMicState) {
-    // console.log("Creating notification");
-    chrome.notifications.create({
-      title: "Mute for Google Meet™",
-      type: "basic",
-      iconUrl: `icons/mic-${request.micMuted}.svg`,
-      message: `Mic is ${request.micMuted}`,
-      silent: true,
-    });
-    //update extension icon
-    chrome.browserAction.setIcon({ path: `/icons/mic-${request.micMuted}.png` });
-  } else {
-    // console.log("No need of creating notification");
-  }
-  previousMicState = request.micMuted;
+
+  chrome.storage.local.get(['previousMicState', 'notifications'], function (values) {
+    if (request.micMuted && request.micMuted !== values.previousMicState) {
+      if (values.notifications) {
+        chrome.notifications.create({
+          title: "Mute for Google Meet™",
+          type: "basic",
+          iconUrl: `icons/mic-${request.micMuted}.svg`,
+          message: `Mic is ${request.micMuted}`,
+          silent: true,
+        });
+        // console.log("Creating notification");
+      }
+      //update extension icon
+      chrome.action.setIcon({ path: `/icons/mic-${request.micMuted}.png` });
+    } else {
+      // console.log("No need of creating notification");
+    }
+    let previousMicState = request.micMuted;
+    chrome.storage.local.set({previousMicState});
+  });
 });
 
-chrome.browserAction.onClicked.addListener(function callback() {
+chrome.action.onClicked.addListener(function callback() {
   toggleMicrophone();
 });
 
 chrome.tabs.onRemoved.addListener(function callback(tabId, removeInfo) {
   chrome.tabs.query({ url: "https://meet.google.com/*" }, function (tabs) {
     if (!tabs || tabs.length == 0) {
-      chrome.browserAction.setIcon({ path: `/icons/mic-default.png` });
+      chrome.action.setIcon({ path: `/icons/mic-default.png` });
     }
   });
 });

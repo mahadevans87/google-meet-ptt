@@ -1,50 +1,55 @@
 {
-  "name": "Mute for Google Meet™",
-  "version": "1.0.2",
-  "description": "Universal mute toggle for Google Meet",
-  "manifest_version": 2,
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  "permissions": ["tabs", "https://meet.google.com/*", "notifications"],
-  "content_scripts": [
-    {
-      "matches": ["https://meet.google.com/*"],
-      "js": ["togglemic.js", "returnToMeetHome.js", "switchToActiveTab.js"]
-    }
-  ],
-  "commands": {
-    "toggle-mic": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+5"
-      },
-      "description": "Toggle Microphone",
-      "global": true
-    }, 
-    "return-home": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+1"
-      },
-      "description": "Return to Meet Home",
-      "global": false
-    }, 
-    "switch-to-active-tab": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+2"
-      },
-      "description": "Switch to active Meet tab",
-      "global": true
-    }
-  },
-  "browser_action": {
-    "default_icon": {
-      "32": "icons/meet_assist_default.png"
-    }
-  },
-  "icons": {
-    "16": "icons/meet_assist_16.png",
-    "48": "icons/meet_assist_48.png",
-    "128": "icons/meet_assist_128.png"
-  }
+	"name": "Mute for Google Meet™",
+	"version": "1.1.0",
+	"description": "Universal mute toggle for Google Meet",
+	"manifest_version": 3,
+	"background": {
+		"service_worker": "background.js"
+	},
+	"permissions": ["tabs", "notifications", "storage"],
+	"host_permissions": ["https://meet.google.com/*"],
+	"content_scripts": [{
+		"matches": ["https://meet.google.com/*"],
+		"js": ["togglemic.js", "returnToMeetHome.js", "switchToActiveTab.js"]
+	}],
+	"commands": {
+		"toggle-mic": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+5"
+			},
+			"description": "Toggle Microphone",
+			"global": true
+		},
+		"return-home": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+1"
+			},
+			"description": "Return to Meet Home",
+			"global": false
+		},
+		"switch-to-active-tab": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+2"
+			},
+			"description": "Switch to active Meet tab",
+			"global": true
+		},
+		"toogle-notifications": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+9"
+			},
+			"description": "Enable/Disable notifications",
+			"global": false
+		}
+	},
+	"action": {
+		"default_icon": {
+			"32": "icons/meet_assist_default.png"
+		}
+	},
+	"icons": {
+		"16": "icons/meet_assist_16.png",
+		"48": "icons/meet_assist_48.png",
+		"128": "icons/meet_assist_128.png"
+	}
 }
