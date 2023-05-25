@@ -36,7 +36,7 @@
 		},
 		"toogle-notifications": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+9"
+				"default": "Ctrl+Shift+8"
 			},
 			"description": "Enable/Disable notifications",
 			"global": false

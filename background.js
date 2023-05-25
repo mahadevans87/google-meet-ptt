@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(function (details) {
-  console.log("Google Meet PTT Installed");
+  // console.log("Google Meet PTT Installed");
   switch (details.reason) {
     case 'install':
       let previousMicState = "ON";
@@ -58,23 +58,23 @@ const switchToActiveTab = () => {
 }
 
 const toogleNotifications = () => {
-  chrome.storage.local.get('notifications', function (notifications) {
-    let notificationText = notifications === true ? "Enabled" : "Disabled";
-    chrome.notifications.create('notify1', opt, function() { console.log('created!'); });
+  chrome.storage.local.get('notifications', function (val) {
+    let currentEnabled = val.notifications === true || val.notifications === undefined;
+    let notificationText = currentEnabled ? "Disabled" : "Enabled";
+    chrome.storage.local.set({notifications: !currentEnabled });
+
     chrome.notifications.create({
       title: "Mute for Google Meet™",
       type: "basic",
-      // iconUrl: `icons/meet_assist_default.png`,
+      iconUrl: `icons/meet_assist_default.png`,
       message: `${notificationText} mic notifications`,
       silent: true,
     });
-    notifications = notifications === true ? false : true ;
-    chrome.storage.local.set({notifications});
   });
 }
 
 chrome.commands.onCommand.addListener(function (command) {
-  // console.log('Command', command);
+  //console.log('Command', command);
   let notifications;
   switch (command) {
     case 'toggle-mic':  
@@ -129,7 +129,7 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
         chrome.notifications.create({
           title: "Mute for Google Meet™",
           type: "basic",
-          iconUrl: `icons/mic-${request.micMuted}.svg`,
+          iconUrl: chrome.runtime.getURL(`icons/mic-${request.micMuted}.png`), //.svg dont work for me :(
           message: `Mic is ${request.micMuted}`,
           silent: true,
         });
